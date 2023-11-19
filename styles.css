@@ -1,0 +1,145 @@
+body {
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+#menu, #cart {
+  width: 60%; /* Largura padrão para PC */
+  max-width: 550px; /* Largura máxima para PC */
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+span {
+  flex: 1; /* Faz com que o texto se estenda pelo máximo possível */
+}
+
+button {
+  cursor: pointer;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+}
+
+.add-btn, .save-btn  {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.add-item-btn  {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.add-btn:hover {
+  background-color: #45a049;
+}
+
+.edit-btn {
+  background-color: #2196F3;
+  color: #fff;
+  margin-right: 5px;
+}
+
+.edit-btn:hover {
+  background-color: #0b7dda;
+}
+
+.remove-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.remove-all-btn{
+  background-color: #f44336;
+  color: #fff;
+}
+
+.remove-btn:hover {
+  background-color: #d32f2f;
+}
+
+#cart {
+  order: 2;
+}
+
+#modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  text-align: left;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #333;
+}
+
+/* Adiciona uma media query para telas menores (dispositivos móveis) */
+@media (max-width: 768px) {
+  #menu, #cart {
+      width: 100%; /* Largura total para dispositivos móveis */
+      max-width: none; /* Remove a largura máxima para dispositivos móveis */
+  }
+}
+
+
+#header img {
+  max-width: 100%; /* Ajusta a imagem para ocupar no máximo 100% da largura do contêiner pai */
+  height: auto; /* Mantém a proporção da imagem */
+  margin: 0 auto; /* Centraliza a imagem */
+  display: block; /* Remove espaço extra abaixo da imagem quando ela é exibida como bloco */
+}
+
+/* Adiciona uma media query para telas menores (dispositivos móveis) */
+@media (max-width: 768px) {
+  #header img {
+      max-width: 80%; /* Ajuste a largura conforme necessário para dispositivos móveis */
+  }
+}
+

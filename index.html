@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cardápio CADEBA</title>
+    <style>
+      #header {
+        text-align: center;
+        padding: 15px;
+        background-color: #333;
+        color: white;
+      }
+
+      #header img {
+       /* Ajuste a largura conforme necessário */
+        height: auto; /* Mantém a proporção da imagem */
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="header">
+      <img src="capa_site.png" />
+    </div>
+
+    <div id="menu">
+      <h2>Cardápio</h2>
+      <ul id="item-list">
+          <!-- Itens do Cardápio -->
+          <li data-name="Item 1" data-price="10.00">
+              <span>Item 1</span>
+              <span>AR$ 10.00</span>
+              <button class="add-btn">Adicionar</button>
+              <button class="edit-btn">Editar</button>
+          </li>
+          <!-- Adicione mais itens conforme necessário -->
+      </ul>
+      <button class = "add-item-btn" id="add-item-btn">Adicionar Novo Item</button>
+      <button class = "remove-all-btn" id="remove-all-btn">Remover Todos</button>
+  </div>
+  
+  <div id="cart">
+      <h2>Carrinho</h2>
+      <ul id="cart-list">
+          <!-- Itens do Carrinho -->
+      </ul>
+      <p>Total: AR$ <span id="total-amount">0.00</span></p>
+  </div>
+  
+  <div id="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Adicionar/Editar Item</h2>
+          <form id="item-form">
+              <label for="item-name">Nome:</label>
+              <input type="text" id="item-name" required>
+              <br> <!-- Adiciona uma quebra de linha aqui -->
+              <label for="item-price">Preço:</label>
+              <input type="number" id="item-price" step="0.01" required>
+              <button class ="save-btn" type="button" id="save-item-btn">Salvar</button>
+              <button class ="remove-btn" type="button" id="remove-item-btn">Remover</button>
+          </form>
+      </div>
+  </div>
+  
+  <script src="script.js"></script>
+  </body>
+  </html>
