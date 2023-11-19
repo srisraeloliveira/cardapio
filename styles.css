@@ -48,6 +48,10 @@ button {
   border-radius: 4px;
 }
 
+.total{
+  text-align: right;
+}
+
 .add-btn, .save-btn  {
   background-color: #4caf50;
   color: #fff;
@@ -143,3 +147,10 @@ button {
   }
 }
 
+#clear-cart-btn {
+  background-color: #f44336; /* Cor de fundo vermelha */
+}
+
+#clear-cart-btn:hover {
+  background-color: #d32f2f; /* Cor de fundo vermelha mais escura ao passar o mouse */
+}
