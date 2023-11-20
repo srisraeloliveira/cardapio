@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CADEBA</title>
+    <title>CADEBA - PRINCIPAL</title>
     <style>
       #header {
         text-align: center;
@@ -47,14 +47,16 @@
           <!-- Itens do Carrinho -->
       </ul>
       <p class = total>Total: AR$ <span id="total-amount">0.00</span></p>
-      <button id="clear-cart-btn" class="custom-btn">Limpar Carrinho</button>
+      <button id="clear-cart-btn" type="button" class="custom-btn">Limpar Carrinho</button>
+      <button id="reset-order-btn" type="button" class="custom-btn">Resetar Números de Pedido</button>
+      <button id="complete-order-btn" type="button" class="custom-btn">Concluir Pedido</button>
   </div>
   
   <div id="modal">
       <div class="modal-content">
           <span class="close">&times;</span>
           <h2>Adicionar/Editar Item</h2>
-          <form id="item-form">
+          <!-- <form id="item-form"> -->
               <label for="item-name">Nome:</label>
               <input type="text" id="item-name" required>
               <br> <!-- Adiciona uma quebra de linha aqui -->
@@ -62,7 +64,7 @@
               <input type="number" id="item-price" step="0.01" required>
               <button class ="save-btn" type="button" id="save-item-btn">Salvar</button>
               <button class ="remove-btn" type="button" id="remove-item-btn">Remover</button>
-          </form>
+          <!-- </form> -->
       </div>
   </div>
   

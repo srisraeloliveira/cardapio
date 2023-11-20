@@ -8,8 +8,10 @@ body {
 }
 
 #menu, #cart {
-  width: 60%; /* Largura padrão para PC */
-  max-width: 550px; /* Largura máxima para PC */
+  width: 60%;
+  /* Largura padrão para PC */
+  max-width: 550px;
+  /* Largura máxima para PC */
   border: 1px solid #ccc;
   padding: 20px;
   background-color: #fff;
@@ -38,7 +40,8 @@ li {
 }
 
 span {
-  flex: 1; /* Faz com que o texto se estenda pelo máximo possível */
+  flex: 1;
+  /* Faz com que o texto se estenda pelo máximo possível */
 }
 
 button {
@@ -48,16 +51,16 @@ button {
   border-radius: 4px;
 }
 
-.total{
+.total {
   text-align: right;
 }
 
-.add-btn, .save-btn  {
+.add-btn, .save-btn, .pedidoPronto {
   background-color: #4caf50;
   color: #fff;
 }
 
-.add-item-btn  {
+.add-item-btn {
   background-color: #4caf50;
   color: #fff;
 }
@@ -81,7 +84,7 @@ button {
   color: #fff;
 }
 
-.remove-all-btn{
+.remove-all-btn {
   background-color: #f44336;
   color: #fff;
 }
@@ -127,30 +130,61 @@ button {
 /* Adiciona uma media query para telas menores (dispositivos móveis) */
 @media (max-width: 768px) {
   #menu, #cart {
-      width: 100%; /* Largura total para dispositivos móveis */
-      max-width: none; /* Remove a largura máxima para dispositivos móveis */
+    width: 100%;
+    /* Largura total para dispositivos móveis */
+    max-width: none;
+    /* Remove a largura máxima para dispositivos móveis */
   }
 }
 
 
 #header img {
-  max-width: 100%; /* Ajusta a imagem para ocupar no máximo 100% da largura do contêiner pai */
-  height: auto; /* Mantém a proporção da imagem */
-  margin: 0 auto; /* Centraliza a imagem */
-  display: block; /* Remove espaço extra abaixo da imagem quando ela é exibida como bloco */
+  max-width: 100%;
+  /* Ajusta a imagem para ocupar no máximo 100% da largura do contêiner pai */
+  height: auto;
+  /* Mantém a proporção da imagem */
+  margin: 0 auto;
+  /* Centraliza a imagem */
+  display: block;
+  /* Remove espaço extra abaixo da imagem quando ela é exibida como bloco */
 }
 
 /* Adiciona uma media query para telas menores (dispositivos móveis) */
 @media (max-width: 768px) {
   #header img {
-      max-width: 80%; /* Ajuste a largura conforme necessário para dispositivos móveis */
+    max-width: 80%;
+    /* Ajuste a largura conforme necessário para dispositivos móveis */
   }
 }
 
 #clear-cart-btn {
-  background-color: #f44336; /* Cor de fundo vermelha */
+  background-color: #f44336;
+  /* Cor de fundo vermelha */
 }
 
 #clear-cart-btn:hover {
-  background-color: #d32f2f; /* Cor de fundo vermelha mais escura ao passar o mouse */
+  background-color: #d32f2f;
+  /* Cor de fundo vermelha mais escura ao passar o mouse */
+}
+
+#complete-order-btn {
+  background-color: #2196F3;
+  /* Cor de fundo azul */
+  font-weight: bold;
+}
+
+#complete-order-btn:hover {
+  background-color: #0b7dda;
+  /* Cor de fundo azul mais escura ao passar o mouse */
+}
+
+/* Adicione estas regras ao seu arquivo CSS */
+#reset-order-btn {
+  background-color: #FF9800;
+  /* Cor de fundo laranja */
+}
+
+#reset-order-btn:hover {
+  background-color: #e68a00;
+  /* Cor de fundo laranja mais escura ao passar o mouse */
 }

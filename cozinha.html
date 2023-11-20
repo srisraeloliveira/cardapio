@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CADEBA - COZINHA</title>
+    <style>
+      #header {
+        text-align: center;
+        padding: 15px;
+        background-color: #333;
+        color: white;
+      }
+      #header img {
+        /* Ajuste a largura conforme necessário */
+        height: auto; /* Mantém a proporção da imagem */
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="favicon.png" type="image/x-icon" />
+  </head>
+  <body>
+    <h1>Pedidos na Cozinha</h1>
+    <div id="pedidos-container">
+        <ul>
+        </ul>
+    </div>
+
+    <!-- Adicione links para scripts ou arquivos JavaScript -->
+    <!-- <script src="script.js" async defer></script> -->
+    <div id="pedidos-container"></div>
+    <script>
+        const pedidosContainer = document.getElementById('pedidos-container');
+       
+        // Configurar a conexão SSE
+        const eventSource = new EventSource('http://localhost:3000/api/sse');
+
+        // Lidar com eventos recebidos
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            // debugger
+            data.pedidos.forEach(pedido => {
+
+                adicionarLinhaPedidov3(pedido);
+                // console.log(pedido.numero, 'numero')
+                // console.log(pedido.itens, 'itens')
+            });
+            // pedidosContainer.innerHTML += `<p>${JSON.stringify(data)}</p>`;
+        };
+
+        // Função para adicionar uma linha ao pedido à lista
+        function adicionarLinhaPedido(pedido) {
+            const ul = pedidosContainer.querySelector("ul");
+
+            if (ul) {
+                const novoPedido = document.createElement("li");
+                debugger
+                let itens = pedido.itens.map((item) => `<p>${item.descricao} | Quantidade: ${item.quantidade}</p>`);
+                novoPedido.innerHTML = `Pedido #${pedido.numero}\n\t${itens}`;
+                ul.appendChild(novoPedido);
+            } else {
+                console.error("Lista 'ul' não encontrada dentro de 'pedidos-container'.");
+            }
+        }
+    
+        // Função para adicionar uma linha ao pedido à lista
+        function adicionarLinhaPedidov2(pedido) {
+            const ul = pedidosContainer.querySelector("ul");
+
+            if (ul) {
+            const novoPedido = document.createElement("li");
+
+            // Cria uma string com os detalhes do pedido
+            const descricaoPedido = `Pedido #${pedido.numero}:`;
+            const itensPedido = pedido.itens.map(
+                (item) => `${item.descricao} - Quantidade: ${item.quantidade}`
+            );
+            const pedidoCompleto = `${descricaoPedido} ${itensPedido.join(", ")}`;
+
+            // Adiciona os detalhes do pedido à linha
+            novoPedido.innerHTML = `
+                <span>${pedidoCompleto}</span>
+                <button id="pedidoProntoBtn" class="pedidoPronto" data-numero-pedido="${pedido.numero}">Pedido Pronto</button>
+            `;
+            novoPedido.id = `Pedido-${pedido.numero}`
+            ul.appendChild(novoPedido);
+
+            // Adiciona um ouvinte de evento ao botão
+            const pedidoProntoBtn = novoPedido.querySelector("#pedidoProntoBtn");
+            if (pedidoProntoBtn) {
+                const numeroPedido = pedidoProntoBtn.dataset.numeroPedido;
+                pedidoProntoBtn.addEventListener("click", function () {
+                    debugger
+                    fetch('http://localhost:3000/api/pedidos', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({orderData: { numero: numeroPedido }}),
+                    }).then(() => {
+                        debugger
+                        document.getElementById(`Pedido-${numeroPedido}`).remove();
+                    })
+                });
+            } else {
+                console.error("Botão 'pedidoProntoBtn' não encontrado na linha do pedido.");
+            }
+            } else {
+            console.error("Lista 'ul' não encontrada dentro de 'pedidos-container'.");
+            }
+        }
+
+        // Função para adicionar uma linha ao pedido à lista
+        function adicionarLinhaPedidov3(pedido) {
+            const ul = pedidosContainer.querySelector("ul");
+
+            if (ul) {
+                const novoPedido = document.createElement("li");
+                novoPedido.innerHTML = `<div>Pedido #${pedido.numero}:</div>`;
+
+            // Adiciona itens do pedido à lista
+            const itensLista = document.createElement("ul");
+            pedido.itens.forEach((item) => {
+                const itemPedido = document.createElement("li");
+                itemPedido.textContent = `${item.quantidade}x ${item.descricao}`;
+                itensLista.appendChild(itemPedido);
+            });
+
+            novoPedido.id = `Pedido-${pedido.numero}`;
+            novoPedido.appendChild(itensLista);
+
+            // Adiciona botão ao lado direito
+            const btnPedidoPronto = document.createElement("button");
+            btnPedidoPronto.id = "pedidoProntoBtn";
+            btnPedidoPronto.className = 'pedidoPronto';
+            btnPedidoPronto.textContent = "Pedido Pronto";
+            btnPedidoPronto.setAttribute('data-numero-pedido', pedido.numero);
+            btnPedidoPronto.addEventListener("click", function () {
+                fetch('http://localhost:3000/api/pedidos', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({orderData: { numero: pedido.numero }}),
+                    }).then(() => {
+                        debugger
+                        document.getElementById(`Pedido-${pedido.numero}`).remove();
+                    })
+            });
+
+            novoPedido.appendChild(btnPedidoPronto);
+
+            ul.appendChild(novoPedido);
+
+            
+            } else {
+            console.error("Lista 'ul' não encontrada dentro de 'pedidos-container'.");
+            }
+        }
+    </script>
+  </body>
+</html>
