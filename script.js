@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
     clearCart();
 
     // Entrega o pedido ao cliente
-    // alert(`Pedido concluído! Número do Pedido: ${orderNumber}`);
+    alert(`Pedido concluído! Número do Pedido: ${orderNumber}`);
 
     // Envia a cópia para a cozinha
     displayKitchenOrder(orderNumber, kitchenOrders);
