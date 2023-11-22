@@ -1,3 +1,6 @@
+
+let baseUrl = location.hostname.match('vercel') ? 'https://sse.uat.ecargoasp.com.br' : 'http://localhost:3000';
+
 document.addEventListener("DOMContentLoaded", function () {
     
   const itemList = document.getElementById("item-list");
@@ -302,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log(orderNumber, 'numero')
 
     try {
-        fetch('http://localhost:3000/api/realtime-order', {
+        fetch(`${baseUrl}/api/realtime-order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

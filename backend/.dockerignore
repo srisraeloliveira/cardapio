@@ -1,0 +1,12 @@
+node_modules
+*.log
+.vercel
+.vscode
+vercel.json
+.gitignore
+server1.js
+.env
+.dockerignore
+Dockerfile
+serverBlob.js
+.env.development.local

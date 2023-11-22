@@ -1,84 +1,21 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const bodyParser = require('body-parser');
-const cors = require('cors'); // Importe o módulo cors
+const cors = require('cors');
+const dotenv = require('dotenv');
+const { kv } = require("@vercel/kv");
+// const { v4: uuidv4 } = require('ulid');
 
 const app = express();
+dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 // Middleware para processar dados JSON
 app.use(bodyParser.json());
 app.use(cors());
 
-// Caminho do arquivo para armazenar os pedidos
-const pedidosFilePath = path.join(__dirname, 'pedidos.json');
+// Store connectionIds for SSE clients
 
-if (fs.existsSync(pedidosFilePath))
-    fs.unlinkSync(pedidosFilePath);
-
-// Criação do arquivo se não existir
-fs.writeFileSync(pedidosFilePath, '[]', 'utf-8');
-
-// Rota para receber pedidos
-app.post('/api/pedidos', (req, res) => {
-  const orderData = req.body.orderData;
-  console.log('Pedido recebido:', orderData);
-
-  // Lê os pedidos existentes do arquivo
-  const pedidos = JSON.parse(fs.readFileSync(pedidosFilePath, 'utf-8'));
-
-  // Adiciona o novo pedido
-  pedidos.push(orderData);
-
-  // Escreve os pedidos atualizados de volta no arquivo
-  fs.writeFileSync(pedidosFilePath, JSON.stringify(pedidos, null, 2), 'utf-8');
-
-  // Envia uma resposta de sucesso
-  res.status(200).json({ success: true });
-});
-
-// Rota para obter todos os pedidos
-app.get('/api/pedidos', (req, res) => {
-  // Lê os pedidos do arquivo
-  const pedidos = JSON.parse(fs.readFileSync(pedidosFilePath, 'utf-8'));
-
-  // Envia os pedidos como resposta
-  res.status(200).json({ pedidos });
-});
-
-// Rota SSE para enviar atualizações em tempo real
-app.get('/api/sse', (req, res) => {
-  // Configura os cabeçalhos para SSE
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.flushHeaders();
-
-  // Função para enviar dados SSE
-  function sendSseData(data) {
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-  }
-
-  // Lê os pedidos do arquivo inicialmente
-  const pedidos = JSON.parse(fs.readFileSync(pedidosFilePath, 'utf-8'));
-
-  // Envia os pedidos existentes como primeira mensagem SSE
-  sendSseData({ pedidos });
-
-  // Adiciona um listener para atualizações futuras
-  const updateListener = (data) => sendSseData(data);
-  updateListeners.push(updateListener);
-
-  // Remove o listener quando a conexão é fechada
-  req.on('close', () => {
-    const index = updateListeners.indexOf(updateListener);
-    if (index !== -1) {
-      updateListeners.splice(index, 1);
-    }
-  });
-});
-
+const connections = new Set();
 // Lista de listeners para atualizações SSE
 const updateListeners = [];
 
@@ -87,41 +24,140 @@ function sendSseUpdate(data) {
   updateListeners.forEach((listener) => listener(data));
 }
 
+app.get('/', async (req, res) => {
+    res.send('Hello World')
+})
+
+// Rota para receber pedidos
+app.post('/api/pedidos', async(req, res) => {
+    const orderData = req.body.orderData;
+
+    // Lê os pedidos existentes do arquivo
+    // const pedidos = await readBlobStorageContent();
+
+    // Adiciona o novo pedido
+    // pedidos.push(orderData);
+    // let number = await kv.append(pedido.numero, pedido.itens);
+    sendSseUpdate({ pedidos: [orderData] });
+
+  // Update data for each connected client
+    for (const connectionId of connections) {
+        // await kv.put(`data_${connectionId}`, JSON.stringify(orderData));
+        let saved = await kv.set(`data_${connectionId}`, JSON.stringify(orderData));
+        console.log(saved);
+    }
+
+    // Escreve os pedidos atualizados de volta no arquivo
+    // await blob.put(pedidosFileName, JSON.stringify(pedidos, null, 2), { contentType: 'application/json; charset=utf-8', addRandomSuffix: false, access: 'public'})
+
+    // Envia uma resposta de sucesso
+    res.status(200).json({ success: true });
+});
+
+// Rota para obter todos os pedidos
+app.get('/api/pedidos', async (req, res) => {
+    let pedidos = await getAll();
+    res.status(200).json({ pedidos });
+});
+
+// Rota SSE para enviar atualizações em tempo real
+app.get('/api/sse', async (req, res) => {
+    // Configura os cabeçalhos para SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
+
+    // const connectionId = uuidv4();
+    // connections.add(connectionId);
+  
+    // const sendSSE = (data) => {
+    //   res.write(`id: ${connectionId}\n`);
+    //   res.write(`data: ${JSON.stringify(data)}\n\n`);
+    // };
+  
+    // const sendDataIfNeeded = async () => {
+    //   const data = await kv.get(`data_${connectionId}`);
+    //   if (data) {
+    //     sendSSE(data);
+    //   }
+    // };
+
+    function sendSseData(data) {
+        res.write(`data: ${JSON.stringify(data)}\n\n`);
+    }
+
+    let pedidos = await getAll();
+  
+    sendSseData({ pedidos });
+
+    const updateListener = (data) => sendSseData(data);
+    updateListeners.push(updateListener);
+
+    // Remove o listener quando a conexão é fechada
+    req.on('close', () => {
+        const index = updateListeners.indexOf(updateListener);
+        if (index !== -1) {
+            updateListeners.splice(index, 1);
+        }
+    });
+});
+
 // Adiciona uma rota para receber pedidos de clientes em tempo real (exemplo)
-app.post('/api/realtime-order', (req, res) => {
-  const orderData = req.body.orderData;
+app.post('/api/realtime-order', async (req, res) => {
+    const orderData = req.body.orderData;
 
-  // Processa o pedido e armazena os dados
-  const pedidos = JSON.parse(fs.readFileSync(pedidosFilePath, 'utf-8'));
+    let saved = await kv.set(orderData.numero, JSON.stringify(orderData));
+    await kv.persist(orderData.numero);
 
-  // Adiciona o novo pedido
-  pedidos.push(orderData);
+    // Envia uma atualização SSE para todos os clientes
+    sendSseUpdate({ pedidos: [orderData] });
 
-  // Escreve os pedidos atualizados de volta no arquivo
-  fs.writeFileSync(pedidosFilePath, JSON.stringify(pedidos, null, 2), 'utf-8');
-
-  // Envia uma atualização SSE para todos os clientes
-  sendSseUpdate({ pedidos: [orderData] });
-
-  res.status(200).json({ success: true });
+    res.status(200).json({ success: true });
 });
 
 // Inicia o servidor
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
 
 // Rota para remover um pedido
-app.delete('/api/pedidos', (req, res) => {
-  const orderData = req.body.orderData;
+app.delete('/api/pedidos', async (req, res) => {
+    const orderData = req.body.orderData;
 
-  // Lê os pedidos do arquivo
-  let pedidos = JSON.parse(fs.readFileSync(pedidosFilePath, 'utf-8'));
+    let deleted = await kv.del(orderData.numero);
 
-  pedidos = pedidos.filter(pedido => pedido.numero != orderData.numero);
-
-  fs.writeFileSync(pedidosFilePath, JSON.stringify(pedidos, null, 2), 'utf-8');
-
-  // Envia os pedidos como resposta
-  res.status(200);//.json({ pedidos })
+    res.sendStatus(200);
 });
+
+// Rota para deletar todos os pedidos
+app.delete('/api/pedidos/all', async (req, res) => {
+    let pedidos = await kv.keys('*');
+
+    pedidos.forEach(async(pedido) => {
+        await kv.del(pedido.numero);
+    });
+
+    res.sendStatus(200);
+});
+
+// Rota para obter todos os pedidos
+app.get('/api/pedidos/all', async(req, res) => {
+    let pedidos = await kv.keys('*');
+    return res.json(pedidos);
+});
+
+// Rota para obter todos os pedidos
+app.get('/teste', async (req, res) => {
+    return res.send("nothing to see here")
+});
+
+async function getAll() {
+    let keys = await kv.keys('*');
+    return await Promise.all(keys.map(async (key) => await kv.get(key)));
+}
+
+// Export the Express API
+module.exports = app;
