@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let totalAmount = 0;
   let editedItem = null;
   let defaultItem = null;
-  let orderCounter = 0;
+ 
+  let orderCounter = parseInt(localStorage.getItem("orderCounter")) || 0;
 
   function markOrderAsReady() {
     // Lógica para marcar o pedido como pronto
@@ -253,6 +254,9 @@ document.addEventListener("DOMContentLoaded", function () {
   function generateOrderNumber() {
     // Aumenta o contador e retorna um número formatado entre 01 e 99
     orderCounter = (orderCounter % 99) + 1;
+
+    // Salva o novo valor do contador no Armazenamento Local
+    localStorage.setItem("orderCounter", orderCounter);
     return String(orderCounter).padStart(2, "0");
   }
 
